@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'login.dart';
+import 'rounded_button.dart';
+import '../Services/auth_services.dart';
+import '../Services/globals.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 void main() {
   runApp(const MyApp());
 }
@@ -29,33 +36,49 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
 
-  nestedAppBar(){
-    return NestedScrollView(headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-      return <Widget>[
-        SliverAppBar(
-          expandedHeight: 320,
-          pinned: true,
-          backgroundColor: Colors.green,
-          elevation: 0,
-          shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            )),
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40.0), bottomRight: Radius.circular(40.0)),
-            ),
-            child: FlexibleSpaceBar(
-              title: Text('Sign-up'),
-              centerTitle: true,
-              background: Image.network('https://i.pinimg.com/564x/3e/df/8b/3edf8bdc9c8198014ec59be84127e395.jpg',
-              fit: BoxFit.fill,),
-            ),
+  String _email = '';
+  String _password = '';
+  String _name = '';
+
+  createAccountPressed() async {
+    bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(_email);
+    if (emailValid) {
+      http.Response response =
+          await AuthServices.register(_name, _email, _password);
+      Map responseMap = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => const LoginScreen(),
+            ));
+      } else {
+        errorSnackBar(context, responseMap.values.first[0]);
+      }
+    } else {
+      errorSnackBar(context, 'email not valid');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        centerTitle: true,
+        elevation: 0,
+        title: const Text(
+          'Registration',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-        )
-      ];
-    }, body: Padding(
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
@@ -120,14 +143,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               )
             ],
           ),
-        ),;
-  }
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: nestedAppBar(),
+        ),
+      ),
     );
-    
   }
 }
