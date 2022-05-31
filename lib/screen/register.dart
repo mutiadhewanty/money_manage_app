@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../Services/auth_services.dart';
-import '../Services/globals.dart';
+import '../api/auth_services.dart';
+import '../api/globals.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -46,7 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.green,
         centerTitle: true,
         elevation: 0,
         title: const Text(
@@ -62,8 +62,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
+              Image.asset('images/loginregis.png'),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
               TextField(
                 decoration: const InputDecoration(
@@ -97,14 +98,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 },
               ),
               const SizedBox(
-                height: 40,
+                height: 25,
               ),
               RoundedButton(
                 btnText: 'Create Account',
                 onBtnPressed: () => createAccountPressed(),
               ),
               const SizedBox(
-                height: 40,
+                height: 15,
               ),
               GestureDetector(
                 onTap: () {

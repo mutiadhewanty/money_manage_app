@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../../Services/auth_services.dart';
-import '../../Services/globals.dart';
+import '../../api/auth_services.dart';
+import '../../api/globals.dart';
 import '../../rounded_button.dart';
 // import 'home.dart';
 
@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.green,
           centerTitle: true,
           elevation: 0,
           title: const Text(
@@ -56,6 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
+              Image.asset('images/loginregis.png'),
               const SizedBox(
                 height: 20,
               ),
