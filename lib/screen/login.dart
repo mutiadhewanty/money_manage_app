@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../Services/auth_services.dart';
-import '../Services/globals.dart';
-import '../rounded_button.dart';
+import '../../Services/auth_services.dart';
+import '../../Services/globals.dart';
+import '../../rounded_button.dart';
 // import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
