@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import '../../api/auth_services.dart';
 import '../../api/globals.dart';
 import '../../rounded_button.dart';
+import 'home.dart';
 // import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,11 +25,11 @@ class _LoginScreenState extends State<LoginScreen> {
       http.Response response = await AuthServices.login(_email, _password);
       Map responseMap = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (BuildContext context) => const Home(),
-        //     ));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => const Home(),
+            ));
       } else {
         errorSnackBar(context, responseMap.values.first);
       }
@@ -52,42 +53,44 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              Image.asset('images/loginregis.png'),
-              const SizedBox(
-                height: 20,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Enter your email',
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                Image.asset('images/loginregis.png'),
+                const SizedBox(
+                  height: 20,
                 ),
-                onChanged: (value) {
-                  _email = value;
-                },
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              TextField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  hintText: 'Enter your password',
+                TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your email',
+                  ),
+                  onChanged: (value) {
+                    _email = value;
+                  },
                 ),
-                onChanged: (value) {
-                  _password = value;
-                },
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              RoundedButton(
-                btnText: 'LOG IN',
-                onBtnPressed: () => loginPressed(),
-              )
-            ],
+                const SizedBox(
+                  height: 30,
+                ),
+                TextField(
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your password',
+                  ),
+                  onChanged: (value) {
+                    _password = value;
+                  },
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                RoundedButton(
+                  btnText: 'LOG IN',
+                  onBtnPressed: () => loginPressed(),
+                )
+              ],
+            ),
           ),
         ));
   }
