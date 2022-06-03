@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.white,
           visualDensity: VisualDensity.adaptivePlatformDensity),
-      home: const Home(),
+      home: const RegisterScreen(),
     );
   }
 }
