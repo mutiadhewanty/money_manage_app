@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_manage_app/screen/home.dart';
-
+import 'package:money_manage_app/screen/pemasukan.dart';
 import 'screen/register.dart';
 
 
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.white,
           visualDensity: VisualDensity.adaptivePlatformDensity),
-      home: const Home(),
+      home: const PemasukanScreen(),
     );
   }
 }
