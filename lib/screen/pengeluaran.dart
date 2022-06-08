@@ -17,25 +17,34 @@ class _PengeluaranScreenState extends State<PengeluaranScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: Text('New Expense'),
-      ),
-      body: Container(
-          padding: EdgeInsets.all(15.0),
-          margin: EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.date_range,
-                size: 20.0,
+        appBar: AppBar(
+          backgroundColor: Colors.green,
+          title: Text('New Expense'),
+        ),
+        body: SingleChildScrollView(
+            child: Container(
+          child: Column(children: <Widget>[
+            Container(
+              padding: EdgeInsets.all(15.0),
+              margin: EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.date_range,
+                    size: 20.0,
+                  ),
+                  Text(
+                    formatedTanggal.toString(),
+                  ),
+                ],
               ),
-              Text(
-                formatedTanggal.toString(),
-              ),
-            ],
-          )),
-    );
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Container()
+          ]),
+        )));
   }
 }
