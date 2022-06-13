@@ -42,7 +42,7 @@ class _PemasukanScreenState extends State<PemasukanScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text('Income Monefy'),
+        title: Text('New Income'),
       ),
       body: Column(
         children: <Widget>[
