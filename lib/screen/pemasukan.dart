@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:core';
+import 'package:money_manage_app/button/buttonsPemasukan.dart';
 
 class PemasukanScreen extends StatefulWidget {
   const PemasukanScreen({Key? key}) : super(key: key);
@@ -72,8 +75,77 @@ class _PemasukanScreenState extends State<PemasukanScreen> {
                   counterText: 'counter'),
             ),
           ),
+          Expanded(
+              flex: 4,
+              child: Container(
+                child: Center(
+                  child: GridView.builder(
+                      itemCount: buttons.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4),
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == 15) {
+                          return ButtonsPemasukan(
+                            buttonText: buttons[index],
+                            color: Colors.blue,
+                            textColor: Colors.white,
+                          );
+                        } else if (index == buttons.length - 1) {
+                          return ButtonsPemasukan(
+                            buttonTapped: () {
+                              setState(() {
+                                equalsPressed();
+                              });
+                            },
+                            buttonText: buttons[index],
+                            color: Colors.lightGreen,
+                            textColor: Colors.white,
+                          );
+                        } else {
+                          return ButtonsPemasukan(
+                            buttonTapped: () {
+                              setState(() {
+                                userQuestion += buttons[index];
+                              });
+                            },
+                            buttonText: buttons[index],
+                            color: isOperator(buttons[index])
+                                ? Colors.lightGreen
+                                : Colors.lightGreen,
+                            textColor: isOperator(buttons[index])
+                                ? Colors.white
+                                : Colors.white,
+                          );
+                        }
+                      }),
+                ),
+              )),
+          Container(
+            margin: EdgeInsets.all(10),
+            height: 50.0,
+            width: 200.0,
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7.0),
+                  side: BorderSide(color: Color.fromARGB(255, 146, 240, 24))),
+              onPressed: () {},
+              padding: EdgeInsets.all(10.0),
+              color: Colors.white,
+              textColor: Color.fromARGB(255, 39, 219, 22),
+              child: Text("Choose Category", style: TextStyle(fontSize: 15)),
+            ),
+          ),
         ],
       ),
     );
   }
+
+  bool isOperator(String x) {
+    if (x == '%' || x == '/' || x == 'x' || x == '-' || x == '+' || x == '=') {
+      return true;
+    }
+    return false;
+  }
+
+  void equalsPressed() {}
 }
