@@ -10,6 +10,7 @@ class IncomeListScreen extends StatelessWidget {
         title: Text('Income List'),
         backgroundColor: Colors.green,
       ),
+      body: GridView.count(crossAxisCount: 3),
     );
   }
 }
