@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.white,
           visualDensity: VisualDensity.adaptivePlatformDensity),
-          home: const ExpenseScreen(),
+          home: const PemasukanScreen(),
     );
   }
 }
