@@ -20,7 +20,44 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.white,
           visualDensity: VisualDensity.adaptivePlatformDensity),
-      home: const RegisterScreen(),
+      home: const ExpenseScreen(),
+    );
+  }
+}
+
+class ExpenseScreen extends StatefulWidget {
+  const ExpenseScreen({ Key? key }) : super(key: key);
+
+  @override
+  State<ExpenseScreen> createState() => _ExpenseScreenState();
+}
+
+class _ExpenseScreenState extends State<ExpenseScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('New Expense'),
+        backgroundColor: Colors.green,
+      ),
+      body: Container(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.date_range_rounded),
+                Text('Tuesday, 7 June')
+              ],
+            ),
+            SizedBox(
+              
+            )
+          ],
+        ),
+      ),
     );
   }
 }

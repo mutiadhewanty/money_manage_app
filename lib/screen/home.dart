@@ -11,8 +11,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Map<String, double> dataMap = {
     "Food": 5,
-    "Car": 3,
-    "Pet": 2,
+    "Car": 1,
+    "Pet": 3,
     "Gift": 2,
   };
 
