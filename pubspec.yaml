@@ -37,6 +37,7 @@ dependencies:
   http: ^0.13.4
   intl: ^0.17.0
   pie_chart: ^5.3.1
+  math_expressions: ^2.3.1
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class IncomeListScreen extends StatelessWidget {
-  const IncomeListScreen({Key? key}) : super(key: key);
+  const IncomeListScreen({ Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class IncomeListScreen extends StatelessWidget {
           crossAxisCount: 3,
           crossAxisSpacing: 10.0,
           mainAxisSpacing: 10.0,
-          shrinkWrap: true,
+          // shrinkWrap: true,
           children: List.generate(20, (index) {
               return Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -31,7 +31,6 @@ class IncomeListScreen extends StatelessWidget {
               );
             },),
         ),
-      
     );
   }
 }
