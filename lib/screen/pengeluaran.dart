@@ -23,6 +23,7 @@ class _PengeluaranScreenState extends State<PengeluaranScreen> {
   var userInput = '';
   bool showKeyboard=true;
   bool showList=false;
+  var id_kategori = 0;
   
   // kalkulator
   final List<String> buttons = [
@@ -47,20 +48,23 @@ class _PengeluaranScreenState extends State<PengeluaranScreen> {
   Future saveOrder() async {
     final response = await http.post(Uri.parse(url), body: {
       "pengeluaran": userInput,
-      "tanggal": formatedTanggal.toString()
+      "tanggal": formatedTanggal.toString(),
+      "id_kategoriPengeluaran": id_kategori.toString()
     });
     print(response.body);
 
     return json.decode(response.body);
   }
 
-  Future getPengeluaran() async {
-    var response = await http.get(Uri.parse(url));
+  final String url1 = 'http://10.0.2.2:8000/api/kategoriPengeluaran';
+  Future getExpenseList() async {
+    var response = await http.get(Uri.parse(url1));
     print(json.decode(response.body));
     return json.decode(response.body);
   }
   @override
   Widget build(BuildContext context) {
+    getExpenseList();
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 242, 248, 220),
         appBar: AppBar(
@@ -121,12 +125,9 @@ class _PengeluaranScreenState extends State<PengeluaranScreen> {
             SizedBox(
               height: 10,
             ),
-            expenseList(),
-            // showKeyboard?keyboard():Container(),
-            // showList?Container( 
-            //          height: 150,
-            //          color: Colors.lightBlue,
-            //       ):Container(),
+            
+            showKeyboard?keyboard():Container(),
+            showList?expenseList():Container(),
             Divider(),
             // choose category
             Container(
@@ -166,49 +167,36 @@ class _PengeluaranScreenState extends State<PengeluaranScreen> {
         ));
   }
 
-  Expanded expenseList() {
-    return Expanded(
-        flex: 3,
-        child: Container(
-          child: GridView.builder(
-              itemCount: buttons.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3),
-              itemBuilder: (BuildContext context, int index) {
-                
-                // Equal_to Button
-                if (index == 14) {
-                  return ButtonsPengeluaran(
-                    buttonTapped: () {
-                      setState(() {
-                        equalPressed();
-                      });
-                    },
-                    buttonText: buttons[index],
-                    color: Color.fromARGB(255, 29, 103, 141),
-                    textColor: Colors.white,
+  FutureBuilder expenseList() {
+    return FutureBuilder(
+        future: getExpenseList(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            return GridView.builder(
+                itemCount: snapshot.data['data'].length,
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4),
+                itemBuilder: (context, index) {
+                  id_kategori = snapshot.data['data'][index]
+                                              ['id'];
+                  return InkWell(
+                     onTap: () {
+                      saveOrder();
+              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //   return DetailScreen(place: snapshot.data['data'][index],);
+              // }));
+            },
+                    child: ButtonsPengeluaran(buttonText: snapshot.data['data'][index]
+                                              ['name'],),
+                                              
                   );
-                }
- 
-                //  other buttons
-                else {
-                  return ButtonsPengeluaran(
-                    buttonTapped: () {
-                      setState(() {
-                        userInput += buttons[index];
-                      });
-                    },
-                    buttonText: buttons[index],
-                    color: isOperator(buttons[index])
-                        ? Colors.green.shade700
-                        : Colors.green.shade300,
-                    textColor: isOperator(buttons[index])
-                        ? Colors.white
-                        : Colors.white,
-                  );
-                }
-              }), // GridView.builder
-        ),
+                  
+                });
+          } else {
+            return Text('Wait...');
+          }
+        },
       );
   }
 
@@ -276,7 +264,5 @@ class _PengeluaranScreenState extends State<PengeluaranScreen> {
 
     userInput = eval.toString();
   }
-  void SampleContainer(){
-    var sts = "empty";
-  }
+  
 }
