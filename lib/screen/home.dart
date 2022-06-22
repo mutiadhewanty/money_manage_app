@@ -5,6 +5,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../api/globals.dart';
+import 'pemasukan.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -170,7 +171,10 @@ class _HomeState extends State<Home> {
                   height: 120,
                   width: 120,
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => PemasukanScreen()));},
                     color: Colors.green.shade50,
                     elevation: 0,
                     shape: CircleBorder(
