@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:money_manage_app/screen/pengeluaran.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:http/http.dart' as http;
@@ -13,41 +14,18 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
-  var id_kategori = 0;
-  var pengeluaran = 0;
-  var nama_kategori = '';
-  var dataX = null;
-
-  // Future getExpenseList() async {
-  //   var response = await http.get(Uri.parse(baseURL+'kategoriPengeluaran'));
-  //   // print(json.decode(response.body));
-  //   return json.decode(response.body);
-  // } 
-
-  // @override
-  // initState() {
-  //   final data = getExpenseList();
-  //   print(data);
-  //   setState(() {
-  //     dataX = data;
-  //   });
-  //   super.initState();
-  // }
+  final dateString = '2022-06-16T10:31:12.000Z';
 
   Future getPengeluaran() async {
     var response = await http.get(Uri.parse(baseURL + 'pengeluaran'));
-    var responseExp = await http.get(Uri.parse(baseURL+'kategoriPengeluaran'));
+    var responseExp =
+        await http.get(Uri.parse(baseURL + 'kategoriPengeluaran'));
     print({"e": json.decode(responseExp.body)});
-    return {"p": json.decode(response.body), "e": json.decode(responseExp.body)};
+    return {
+      "p": json.decode(response.body),
+      "e": json.decode(responseExp.body)
+    };
   }
-
-  // Map<String, int> dataMap = {
-  //   'id_kategori': pengeluaran.toString(),
-  //   // "Car": 1,
-  //   // "Pet": 3,
-  //   // "Gift": 2,
-  // };
 
   final colorList = <Color>[
     Colors.greenAccent,
@@ -68,7 +46,6 @@ class _HomeState extends State<Home> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            
             Container(
               height: 320,
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -81,50 +58,68 @@ class _HomeState extends State<Home> {
                     return ListView.builder(
                         itemCount: snapshot.data['p']['data'].length,
                         // itemCount: 5,
-                        scrollDirection: Axis.horizontal,
+                        // scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          // id_kategori = snapshot.data['data'][index]['id_kategori'];
-                          // pengeluaran = snapshot.data['data'][index]['pengeluaran'];
-                          return InkWell(
-                            onTap: () {},
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  color: Colors.amber,
-                                  child: Text(
-              snapshot.data['p']['data'][index]['tanggal'].toString(),
-              style:
-                  TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center ,
-            ),
-                                ),
-                                Container(
-                                  color: Colors.blueAccent,
-                                  height: 250,
-                                  child: PieChart(
-                                    dataMap: {
-    // snapshot.data['data'][index]['id_kategoriPengeluaran'].toString(): double.parse(snapshot.data['data'][index]['pengeluaran'].toString()),
-    snapshot.data['e']['data'][index]['name'].toString(): double.parse(snapshot.data['p']['data'][index]['pengeluaran'].toString()),
-    // "Car": 1,
-    // "Pet": 3,
-    // "Gift": 2,
-  },
-                                    chartType: ChartType.ring,
-                                    baseChartColor: Colors.black.withOpacity(0.10),
-                                    colorList: colorList,
-                                    chartValuesOptions: ChartValuesOptions(
-                                      showChartValuesInPercentage: true,
-                                    ),
-                                    totalValue: 20,
+                          bool isSameDate = true;
+                          final String dateString =
+                              snapshot.data['p']['data'][index]['tanggal'];
+                          final DateTime date = DateTime.parse(dateString);
+                          final item = snapshot.data['p']['data'][index];
+                          if (index == 0) {
+                            isSameDate = false;
+                          } else {
+                            final String prevDateString = snapshot.data['p']
+                                ['data'][index - 1]['tanggal'];
+                            final DateTime prevDate =
+                                DateTime.parse(prevDateString);
+                            isSameDate = date.isSameDate(prevDate);
+                          }
+                          if (index == 0 || !(isSameDate)) {
+                            return Column(children: [
+                              Text(date.formatDate()),
+                              Container(
+                                height: 250,
+                                child: PieChart(
+                                  dataMap: {
+                                    snapshot.data['e']['data'][index]['name']
+                                            .toString():
+                                        double.parse(snapshot.data['p']['data']
+                                                [index]['pengeluaran']
+                                            .toString()),
+                                  },
+                                  chartType: ChartType.ring,
+                                  baseChartColor:
+                                      Colors.black.withOpacity(0.10),
+                                  colorList: colorList,
+                                  chartValuesOptions: ChartValuesOptions(
+                                    showChartValuesInPercentage: true,
                                   ),
+                                  totalValue: 20,
                                 ),
-                              ],
-                            ),
-                          );
+                              ),
+                            ]);
+                          } else {
+                            return Container(
+                              height: 250,
+                              child: PieChart(
+                                dataMap: {
+                                  snapshot.data['e']['data'][index]['name']
+                                          .toString():
+                                      double.parse(snapshot.data['p']['data']
+                                              [index]['pengeluaran']
+                                          .toString()),
+                                },
+                                chartType: ChartType.ring,
+                                baseChartColor: Colors.black.withOpacity(0.10),
+                                colorList: colorList,
+                                chartValuesOptions: ChartValuesOptions(
+                                  showChartValuesInPercentage: true,
+                                ),
+                                totalValue: 100,
+                              ),
+                            );
+                          }
                         });
                   } else {
                     return Text('Wait...');
@@ -213,5 +208,25 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+}
+
+const String dateFormatter = 'MMMM dd, y';
+
+extension DateHelper on DateTime {
+  String formatDate() {
+    final formatter = DateFormat(dateFormatter);
+    return formatter.format(this);
+  }
+
+  bool isSameDate(DateTime other) {
+    return this.year == other.year &&
+        this.month == other.month &&
+        this.day == other.day;
+  }
+
+  int getDifferenceInDaysWithNow() {
+    final now = DateTime.now();
+    return now.difference(this).inDays;
   }
 }
