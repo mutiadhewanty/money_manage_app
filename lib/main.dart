@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:money_manage_app/screen/home.dart';
-import 'package:money_manage_app/screen/incomeList.dart';
 import 'package:money_manage_app/screen/login.dart';
 import 'package:money_manage_app/screen/pemasukan.dart';
 import 'package:money_manage_app/screen/pengeluaran.dart';
