@@ -13,6 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
   var id_kategori = 0;
   var pengeluaran = 0;
   var nama_kategori = '';
@@ -22,7 +23,7 @@ class _HomeState extends State<Home> {
   //   var response = await http.get(Uri.parse(baseURL+'kategoriPengeluaran'));
   //   // print(json.decode(response.body));
   //   return json.decode(response.body);
-  // }
+  // } 
 
   // @override
   // initState() {
@@ -36,13 +37,9 @@ class _HomeState extends State<Home> {
 
   Future getPengeluaran() async {
     var response = await http.get(Uri.parse(baseURL + 'pengeluaran'));
-    var responseExp =
-        await http.get(Uri.parse(baseURL + 'kategoriPengeluaran'));
+    var responseExp = await http.get(Uri.parse(baseURL+'kategoriPengeluaran'));
     print({"e": json.decode(responseExp.body)});
-    return {
-      "p": json.decode(response.body),
-      "e": json.decode(responseExp.body)
-    };
+    return {"p": json.decode(response.body), "e": json.decode(responseExp.body)};
   }
 
   // Map<String, int> dataMap = {
@@ -71,8 +68,9 @@ class _HomeState extends State<Home> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            
             Container(
-              height: 150,
+              height: 320,
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: FutureBuilder(
                 future: getPengeluaran(),
@@ -91,33 +89,38 @@ class _HomeState extends State<Home> {
                           return InkWell(
                             onTap: () {},
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  'Wednesday, 1 June',
-                                  style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.w600),
+                                Container(
+                                  height: 50,
+                                  color: Colors.amber,
+                                  child: Text(
+              snapshot.data['p']['data'][index]['tanggal'].toString(),
+              style:
+                  TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center ,
+            ),
                                 ),
-                                PieChart(
-                                  dataMap: {
-                                    // snapshot.data['data'][index]['id_kategoriPengeluaran'].toString(): double.parse(snapshot.data['data'][index]['pengeluaran'].toString()),
-                                    snapshot.data['e']['data'][index]['name']
-                                            .toString():
-                                        double.parse(snapshot.data['p']['data']
-                                                [index]['pengeluaran']
-                                            .toString()),
-                                    // "Car": 1,
-                                    // "Pet": 3,
-                                    // "Gift": 2,
-                                  },
-                                  chartType: ChartType.ring,
-                                  baseChartColor:
-                                      Colors.black.withOpacity(0.10),
-                                  colorList: colorList,
-                                  chartValuesOptions: ChartValuesOptions(
-                                    showChartValuesInPercentage: true,
+                                Container(
+                                  color: Colors.blueAccent,
+                                  height: 250,
+                                  child: PieChart(
+                                    dataMap: {
+    // snapshot.data['data'][index]['id_kategoriPengeluaran'].toString(): double.parse(snapshot.data['data'][index]['pengeluaran'].toString()),
+    snapshot.data['e']['data'][index]['name'].toString(): double.parse(snapshot.data['p']['data'][index]['pengeluaran'].toString()),
+    // "Car": 1,
+    // "Pet": 3,
+    // "Gift": 2,
+  },
+                                    chartType: ChartType.ring,
+                                    baseChartColor: Colors.black.withOpacity(0.10),
+                                    colorList: colorList,
+                                    chartValuesOptions: ChartValuesOptions(
+                                      showChartValuesInPercentage: true,
+                                    ),
+                                    totalValue: 20,
                                   ),
-                                  totalValue: 20,
                                 ),
                               ],
                             ),
