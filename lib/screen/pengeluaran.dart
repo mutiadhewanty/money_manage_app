@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:money_manage_app/screen/home.dart';
+
 import '../../api/globals.dart';
 import 'package:flutter/material.dart';
 import 'dart:core';
@@ -23,7 +25,7 @@ class _PengeluaranScreenState extends State<PengeluaranScreen> {
   var userInput = '';
   bool showKeyboard = true;
   bool showList = false;
-  var id_kategori = 0;
+  var id_kategori;
 
   // kalkulator
   final List<String> buttons = [
@@ -55,15 +57,20 @@ class _PengeluaranScreenState extends State<PengeluaranScreen> {
     return json.decode(response.body);
   }
 
-  Future getExpenseList() async {
-    var response = await http.get(Uri.parse(baseURL+'kategoriPengeluaran'));
-    print(json.decode(response.body));
-    return json.decode(response.body);
+  Future getPengeluaran() async {
+    var response = await http.get(Uri.parse(baseURL + 'pengeluaran'));
+    var responseExp =
+        await http.get(Uri.parse(baseURL + 'kategoriPengeluaran'));
+    print({"p": json.decode(response.body)});
+    return {
+      "p": json.decode(response.body),
+      "e": json.decode(responseExp.body)
+    };
   }
 
   @override
   Widget build(BuildContext context) {
-    getExpenseList();
+    getPengeluaran();
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 242, 248, 220),
         appBar: AppBar(
@@ -158,25 +165,113 @@ class _PengeluaranScreenState extends State<PengeluaranScreen> {
 
   FutureBuilder expenseList() {
     return FutureBuilder(
-      future: getExpenseList(),
+      future: getPengeluaran(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.hasData) {
           return GridView.builder(
-              itemCount: snapshot.data['data'].length,
+              itemCount: snapshot.data['e']['data'].length,
               shrinkWrap: true,
               gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
               itemBuilder: (context, index) {
-                id_kategori = snapshot.data['data'][index]['id'];
-                return InkWell(
+                if (index == 0) {
+                  return ButtonsPengeluaran(
+                    buttonTapped: () {
+                    setState(() {
+                      id_kategori = snapshot.data['e']['data'][index]['id'] = 1;
+                      saveOrder();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => Home()));
+                    });
+                  },
+                    buttonText: snapshot.data['e']['data'][index]['name'].toString(),
+                  );
+                  
+                }else if (index == 1) {
+                  return ButtonsPengeluaran(
+                    buttonTapped: () {
+                    setState(() {
+                      id_kategori = snapshot.data['e']['data'][index]['id'] = 2;
+                      saveOrder();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => Home()));
+                    });
+                  },
+                    buttonText: snapshot.data['e']['data'][index]['name'].toString(),
+                  );
+                  
+                }else if (index == 2) {
+                  return ButtonsPengeluaran(
+                    buttonTapped: () {
+                    setState(() {
+                      id_kategori = snapshot.data['e']['data'][index]['id'] = 3;
+                      saveOrder();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => Home()));
+                    });
+                  },
+                    buttonText: snapshot.data['e']['data'][index]['name'].toString(),
+                  );
+                  
+                }else if (index == 3) {
+                  return ButtonsPengeluaran(
+                    buttonTapped: () {
+                    setState(() {
+                      id_kategori = snapshot.data['e']['data'][index]['id'] = 4;
+                      saveOrder();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => Home()));
+                    });
+                  },
+                    buttonText: snapshot.data['e']['data'][index]['name'].toString(),
+                  );
+                  
+                }else if (index == 4) {
+                  return ButtonsPengeluaran(
+                    buttonTapped: () {
+                    setState(() {
+                      id_kategori = snapshot.data['e']['data'][index]['id'] = 5;
+                      saveOrder();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => Home()));
+                    });
+                  },
+                    buttonText: snapshot.data['e']['data'][index]['name'].toString(),
+                  );
+                  
+                }else if (index == 5) {
+                   return ButtonsPengeluaran(
+                    buttonTapped: () {
+                    setState(() {
+                      id_kategori = snapshot.data['e']['data'][index]['id'] = 6;
+                      saveOrder();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => Home()));
+                    });
+                  },
+                    buttonText: snapshot.data['e']['data'][index]['name'].toString(),
+                  );
+                  
+                }
+                 return InkWell(
                   onTap: () {
                     saveOrder();
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    //   return DetailScreen(place: snapshot.data['data'][index],);
-                    // }));
+                    
                   },
                   child: ButtonsPengeluaran(
-                    buttonText: snapshot.data['data'][index]['name'],
+                    buttonText: snapshot.data['e']['data'][index]['name'].toString(),
                   ),
                 );
               });
