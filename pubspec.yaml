@@ -38,6 +38,7 @@ dependencies:
   intl: ^0.17.0
   pie_chart: ^5.3.1
   math_expressions: ^2.3.1
+  syncfusion_flutter_charts: ^19.1.54
 
 dev_dependencies:
   flutter_test:

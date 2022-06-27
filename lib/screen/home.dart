@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:money_manage_app/screen/historiPengeluaran.dart';
 import 'package:money_manage_app/screen/pengeluaran.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../api/globals.dart';
+import 'historiPemasukan.dart';
 import 'pemasukan.dart';
 
 class Home extends StatefulWidget {
@@ -16,6 +19,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final dateString = '2022-06-16T10:31:12.000Z';
+  late List<GDPData> _chartData;
+  late TooltipBehavior _tooltipBehavior;
+
+  void initState() {
+    
+    _tooltipBehavior = TooltipBehavior(enable: true);
+    super.initState();
+  }
 
   Future getPengeluaran() async {
     var response = await http.get(Uri.parse(baseURL + 'pengeluaran'));
@@ -27,13 +38,6 @@ class _HomeState extends State<Home> {
       "e": json.decode(responseExp.body)
     };
   }
-
-  final colorList = <Color>[
-    Colors.greenAccent,
-    Colors.amberAccent,
-    Colors.blueAccent,
-    Colors.redAccent
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +63,10 @@ class _HomeState extends State<Home> {
                     return ListView.builder(
                         itemCount: snapshot.data['p']['data'].length,
                         // itemCount: 5,
-                        // scrollDirection: Axis.horizontal,
+                        scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
+                          _chartData = getChartData(snapshot, index);
                           bool isSameDate = true;
                           final String dateString =
                               snapshot.data['p']['data'][index]['tanggal'];
@@ -81,44 +86,29 @@ class _HomeState extends State<Home> {
                               Text(date.formatDate()),
                               Container(
                                 height: 250,
-                                child: PieChart(
-                                  dataMap: {
-                                    snapshot.data['e']['data'][index]['name']
-                                            .toString():
-                                        double.parse(snapshot.data['p']['data']
-                                                [index]['pengeluaran']
-                                            .toString()),
-                                  },
-                                  chartType: ChartType.ring,
-                                  baseChartColor:
-                                      Colors.black.withOpacity(0.10),
-                                  colorList: colorList,
-                                  chartValuesOptions: ChartValuesOptions(
-                                    showChartValuesInPercentage: true,
-                                  ),
-                                  totalValue: 20,
+                                child: SfCircularChart(
+                                  legend: Legend(
+                                      isVisible: true,
+                                      overflowMode:
+                                          LegendItemOverflowMode.wrap),
+                                  tooltipBehavior: _tooltipBehavior,
+                                  series: <CircularSeries>[
+                                    DoughnutSeries<GDPData, String>(
+                                        dataSource: _chartData,
+                                        xValueMapper: (GDPData data, _) =>
+                                            data.kategori,
+                                        yValueMapper: (GDPData data, _) =>
+                                            data.pengeluaran,
+                                        dataLabelSettings:
+                                            const DataLabelSettings(
+                                                isVisible: true))
+                                  ],
                                 ),
                               ),
                             ]);
                           } else {
                             return Container(
-                              height: 250,
-                              child: PieChart(
-                                dataMap: {
-                                  snapshot.data['e']['data'][index]['name']
-                                          .toString():
-                                      double.parse(snapshot.data['p']['data']
-                                              [index]['pengeluaran']
-                                          .toString()),
-                                },
-                                chartType: ChartType.ring,
-                                baseChartColor: Colors.black.withOpacity(0.10),
-                                colorList: colorList,
-                                chartValuesOptions: ChartValuesOptions(
-                                  showChartValuesInPercentage: true,
-                                ),
-                                totalValue: 100,
-                              ),
+                              height: 0,
                             );
                           }
                         });
@@ -135,7 +125,12 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => HistoriPemasukan()));
+                  },
                   icon: Icon(Icons.menu),
                   iconSize: 50,
                   color: Colors.green,
@@ -154,10 +149,15 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => HistoriPengeluaran()));
+                  },
                   icon: Icon(Icons.menu),
                   iconSize: 50,
-                  color: Colors.green,
+                  color: Colors.red,
                 ),
               ],
             ),
@@ -171,10 +171,10 @@ class _HomeState extends State<Home> {
                   height: 120,
                   width: 120,
                   child: MaterialButton(
-                    onPressed: () {Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => PemasukanScreen()));},
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => PemasukanScreen()));
+                    },
                     color: Colors.green.shade50,
                     elevation: 0,
                     shape: CircleBorder(
@@ -213,6 +213,42 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  List<GDPData> getChartData(AsyncSnapshot<dynamic> snapshot, int index) {
+    var chartData;
+    for (var i = 0; i < snapshot.data['p']['data'].length; i++) {
+      chartData = [
+      GDPData(
+          snapshot.data['e']['data'][index]['name'].toString(),
+          double.parse(
+              snapshot.data['p']['data'][index]['pengeluaran'].toString())),
+    ];
+    }
+    return chartData;
+  }
+
+  // PieChart pieChart(AsyncSnapshot<dynamic> snapshot, int index) {
+  //   final dataMap = <String, double>{
+  //   snapshot.data['e']['data'][index]['name'].toString(): double.parse(
+  //           snapshot.data['p']['data'][index]['pengeluaran'].toString()),
+  // };
+  //   return PieChart(
+  //     dataMap: dataMap,
+  //     animationDuration: Duration(milliseconds: 800),
+  //     chartType: ChartType.ring,
+  //     initialAngleInDegree: 0,
+  //     baseChartColor: Colors.black.withOpacity(0.10),
+  //     colorList: colorList,
+  //     chartValuesOptions: ChartValuesOptions(
+  //       showChartValueBackground: true,
+  //       showChartValues: true,
+  //       showChartValuesInPercentage: false,
+  //       showChartValuesOutside: false,
+  //       decimalPlaces: 1,
+  //     ),
+  //     totalValue: 20,
+  //   );
+  // }
 }
 
 const String dateFormatter = 'MMMM dd, y';
@@ -233,4 +269,10 @@ extension DateHelper on DateTime {
     final now = DateTime.now();
     return now.difference(this).inDays;
   }
+}
+
+class GDPData {
+  GDPData(this.kategori, this.pengeluaran);
+  final String kategori;
+  final double pengeluaran;
 }

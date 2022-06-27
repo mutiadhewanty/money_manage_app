@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_manage_app/screen/historiPemasukan.dart';
 import 'package:money_manage_app/screen/home.dart';
 import 'package:money_manage_app/screen/login.dart';
 import 'package:money_manage_app/screen/pemasukan.dart';
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return MaterialApp(
       title: 'Euphoria',
       debugShowCheckedModeBanner: false,

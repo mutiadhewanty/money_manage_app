@@ -75,7 +75,7 @@ class _PemasukanScreenState extends State<PemasukanScreen> {
         backgroundColor: Color.fromARGB(255, 242, 248, 220),
         appBar: AppBar(
           backgroundColor: Colors.green,
-          title: Text('New Expense'),
+          title: Text('New Income'),
         ),
         body: Column(
           children: <Widget>[
