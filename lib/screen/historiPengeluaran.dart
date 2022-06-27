@@ -17,7 +17,7 @@ class _HistoriPengeluaranState extends State<HistoriPengeluaran> {
     var response = await http.get(Uri.parse(baseURL + 'pengeluaran'));
     var responseExp =
         await http.get(Uri.parse(baseURL + 'kategoriPengeluaran'));
-    print({"e": json.decode(responseExp.body)});
+    print({"p": json.decode(responseExp.body)});
     return {
       "p": json.decode(response.body),
       "e": json.decode(responseExp.body)
@@ -31,79 +31,78 @@ class _HistoriPengeluaranState extends State<HistoriPengeluaran> {
         backgroundColor: Colors.green,
         title: Text('Expense History'),
       ),
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: getPengeluaran(),
-          builder:
-              (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.hasData) {
-              print(snapshot.data['p']['data'].length);
-              return ListView.builder(
-                  itemCount: snapshot.data['p']['data'].length,
-                  // itemCount: 5,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    bool isSameDate = true;
-                    final String dateString =
-                        snapshot.data['p']['data'][index]['tanggal'];
-                    final DateTime date = DateTime.parse(dateString);
-                    final item = snapshot.data['p']['data'][index];
-                    if (index == 0) {
-                      isSameDate = false;
-                    } else {
-                      final String prevDateString = snapshot.data['p']
-                          ['data'][index - 1]['tanggal'];
-                      final DateTime prevDate =
-                          DateTime.parse(prevDateString);
-                      isSameDate = date.isSameDate1(prevDate);
-                    }
-                    if (index == 0 || !(isSameDate)) {
-                      return Column(children: [
-                        SizedBox(height: 20,),
-                        Text(date.formatDate1()),
-                        SizedBox(height: 20,),
-                        Card(
-                          // color: Colors.blueAccent,
-                          child: Container(
-                            // color: Colors.amber,
-                            height: 50,
-                            width: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                Text(snapshot.data['e']['data'][index]['name'].toString()),
-                                Text(snapshot.data['p']['data'][index]['pengeluaran'].toString()),
-                              ],),
-                            )
-                          ),
+      body: FutureBuilder(
+        future: getPengeluaran(),
+        builder:
+            (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            print(snapshot.data['p']['data']);
+            return ListView.builder(
+                itemCount: snapshot.data['p']['data'].length,
+                // itemCount: 5,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  bool isSameDate = true;
+                  final String dateString =
+                      snapshot.data['p']['data'][index]['tanggal'];
+                  final DateTime date = DateTime.parse(dateString);
+                  final item = snapshot.data['p']['data'][index];
+                  if (index == 0) {
+                    isSameDate = false;
+                  } else {
+                    final String prevDateString = snapshot.data['p']
+                        ['data'][index - 1]['tanggal'];
+                    final DateTime prevDate =
+                        DateTime.parse(prevDateString);
+                    isSameDate = date.isSameDate1(prevDate);
+                  }
+                  if (index == 0 || !(isSameDate)) {
+                    return Column(children: [
+                      SizedBox(height: 20,),
+                      Text(date.formatDate1()),
+                      SizedBox(height: 20,),
+                      Card(
+                        // color: Colors.blueAccent,
+                        child: Container(
+                          // color: Colors.amber,
+                          height: 50,
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                              Text(snapshot.data['e']['data'][index]['name'].toString()),
+                              Text(snapshot.data['p']['data'][index]['pengeluaran'].toString()),
+                            ],),
+                          )
                         ),
-                      ]);
-                    } else {
-                      return Card(
-                          child: Container(
-                            height: 50,
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                Text(snapshot.data['e']['data'][index]['name'].toString()),
-                                Text(snapshot.data['p']['data'][index]['pengeluaran'].toString()),
-                              ],),
-                            )
-                          ),
-                        );
-                    }
-                  });
-            } else {
-              return Text('Wait...');
-            }
-          },
-        ),
+                      ),
+                    ]
+                    );
+                  } else {
+                    return Card(
+                        child: Container(
+                          height: 50,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                              Text(snapshot.data['e']['data'][index]['name'].toString()),
+                              Text(snapshot.data['p']['data'][index]['pengeluaran'].toString()),
+                            ],),
+                          )
+                        ),
+                      );
+                  }
+                });
+          } else {
+            return Text('Wait...');
+          }
+        },
       ),
     );
   }

@@ -23,20 +23,35 @@ class _HomeState extends State<Home> {
   late TooltipBehavior _tooltipBehavior;
 
   void initState() {
-    
     _tooltipBehavior = TooltipBehavior(enable: true);
     super.initState();
   }
+
 
   Future getPengeluaran() async {
     var response = await http.get(Uri.parse(baseURL + 'pengeluaran'));
     var responseExp =
         await http.get(Uri.parse(baseURL + 'kategoriPengeluaran'));
-    print({"e": json.decode(responseExp.body)});
+    print({"p": json.decode(responseExp.body)});
     return {
       "p": json.decode(response.body),
       "e": json.decode(responseExp.body)
     };
+  }
+
+  Future getPemasukan() async {
+    var response = await http.get(Uri.parse(baseURL + 'pemasukan'));
+    var responseExp =
+        await http.get(Uri.parse(baseURL + 'kategoriPemasukan'));
+    print({"p": json.decode(response.body)});
+    return {
+      "p1": json.decode(response.body),
+      "i": json.decode(responseExp.body)
+    };
+  }
+
+  void jumlahPemasukan(AsyncSnapshot<dynamic> snapshot, int index){
+    final jumlahPemasukan = snapshot.data['p1']['data'][index]['pemasukan'] += snapshot.data['p1']['data'][index]['pemasukan'];
   }
 
   @override
@@ -86,6 +101,7 @@ class _HomeState extends State<Home> {
                               Text(date.formatDate()),
                               Container(
                                 height: 250,
+                                
                                 child: SfCircularChart(
                                   legend: Legend(
                                       isVisible: true,
@@ -95,6 +111,11 @@ class _HomeState extends State<Home> {
                                   series: <CircularSeries>[
                                     DoughnutSeries<GDPData, String>(
                                         dataSource: _chartData,
+                                        // [
+                                        //   GDPData(
+                                        //       snapshot.data['e']['data'][index]['name'].toString(),
+                                        //       double.parse(snapshot.data['p']['data'][index]['pengeluaran'].toString())),
+                                        // ],
                                         xValueMapper: (GDPData data, _) =>
                                             data.kategori,
                                         yValueMapper: (GDPData data, _) =>
@@ -126,10 +147,8 @@ class _HomeState extends State<Home> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => HistoriPemasukan()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => HistoriPemasukan()));
                   },
                   icon: Icon(Icons.menu),
                   iconSize: 50,
@@ -151,9 +170,9 @@ class _HomeState extends State<Home> {
                 IconButton(
                   onPressed: () {
                     Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => HistoriPengeluaran()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => HistoriPengeluaran()));
                   },
                   icon: Icon(Icons.menu),
                   iconSize: 50,
@@ -215,15 +234,15 @@ class _HomeState extends State<Home> {
   }
 
   List<GDPData> getChartData(AsyncSnapshot<dynamic> snapshot, int index) {
-    var chartData;
-    for (var i = 0; i < snapshot.data['p']['data'].length; i++) {
-      chartData = [
+
+      late List<GDPData>chartData = [
       GDPData(
           snapshot.data['e']['data'][index]['name'].toString(),
           double.parse(
               snapshot.data['p']['data'][index]['pengeluaran'].toString())),
+      
     ];
-    }
+
     return chartData;
   }
 
